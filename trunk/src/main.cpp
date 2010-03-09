@@ -153,14 +153,14 @@ int main(int argc, const char * argv[])
   string time_type = "TIME";
 
   // Проверяем правильность путей файлов
-  if( !(file_mode( structure_path ) & _S_IFREG) || !(file_mode( sql_path ) & _S_IFDIR) || !(file_mode( export_path ) & _S_IFDIR) || (!sql_path.empty() && !(file_mode( sql_path ) & _S_IFDIR)) )
+  if( !(file_mode( structure_path ) & S_IFREG) || !(file_mode( sql_path ) & S_IFDIR) || !(file_mode( export_path ) & S_IFDIR) || (!sql_path.empty() && !(file_mode( sql_path ) & S_IFDIR)) )
   {
     cerr << GetErrorMsg(E_FILE_NOT_FOUND) << endl;
     return EXIT_FAILURE;
   }
   if( !tune_file.empty() )
   {
-    if( !(file_mode( tune_file ) & _S_IFREG) )
+    if( !(file_mode( tune_file ) & S_IFREG) )
     {
       cerr << GetErrorMsg(E_FILE_NOT_FOUND) << endl;
       return EXIT_FAILURE;
