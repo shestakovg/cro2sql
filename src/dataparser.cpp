@@ -114,11 +114,11 @@ CDataParser::CDataParser(CDatabase * db) : processed_size(0), data_size(0)
 
   // Проверяем все ли файлы наместе:
   for(vector<SDataFile>::iterator df = data_files.begin(); df != data_files.end(); df++ )
-    if( !(file_mode(df->file_path) & _S_IFREG) )
+    if( !(file_mode(df->file_path) & S_IFREG) )
     {
       warning_msgs.push_back("Файл данных \""+ df->file_path +"\" не найден.");
-      df--;
-      data_files.erase(df + 1);
+      df=data_files.erase(df);
+	  df--;
     }
     else
     {

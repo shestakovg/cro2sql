@@ -53,6 +53,7 @@ class CField
     const char * TYPE_LINK_DIRECT;
     const char * TYPE_LINK_INVERSE;
     const char * TYPE_LINK_MULTY;
+    const char * TYPE_SECURITY_LEVEL;
     CField() : TYPE_DIGITS("Ц\0"),
                TYPE_TEXT("Т\0"),
                TYPE_DICTIONARY("С\0"),
@@ -62,7 +63,8 @@ class CField
                TYPE_TEMP_FILE("ВФ\0"),
                TYPE_LINK_DIRECT("П\0"),
                TYPE_LINK_INVERSE("О\0"),
-               TYPE_LINK_MULTY("ПО\0") {};
+               TYPE_LINK_MULTY("ПО\0"),
+               TYPE_SECURITY_LEVEL("УД\0"){};
 		std::string cro_name;       //!< Название
     std::string link_to_base;   //!< Если поле ссылочное, указывается направление ссылки (база)
     std::string link_to_field;  //!< Если поле ссылочное, указывается направление ссылки (поле)

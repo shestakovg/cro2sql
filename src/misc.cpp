@@ -5,10 +5,10 @@ using namespace std;
 
 int file_mode(string path)
 {
-  struct _stat buf;
+  struct stat buf;
   int result;
-  // Get data associated with "crt_stat.c":
-  result = _stat( path.c_str(), &buf );
+  // Get data associated with "crtstat.c":
+  result = stat( path.c_str(), &buf );
   // Check if statistics are valid:
   if( result != 0 )
   {
@@ -21,10 +21,10 @@ int file_mode(string path)
 }
 size_t file_size(string path)
 {
-  struct _stat buf;
+  struct stat buf;
   int result;
-  // Get data associated with "crt_stat.c":
-  result = _stat( path.c_str(), &buf );
+  // Get data associated with "crtstat.c":
+  result = stat( path.c_str(), &buf );
   // Check if statistics are valid:
   if( result != 0 )
   {

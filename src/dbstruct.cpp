@@ -23,6 +23,7 @@ under the License.
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 #include <stdexcept>
 #include "freader.h"
 #include "misc.h"
@@ -585,6 +586,8 @@ int CDatabase::fetch_field_info(const string *str, size_t &cursor, CField * fld,
     return EXIT_FAILURE;
   }
   fld->cro_type = str->substr(delimiters[1] + 1, delimiters[2] - delimiters[1] - 1);
+  // TODO: TYPE_SECURITY_LEVEL - это поле уровень доступа. я его рассматриваю
+  //       как нормальное поле. Ќадо бы с ним поаккуратней...
   if( fld->cro_type.empty() ||
     (fld->cro_type != fld->TYPE_DIGITS &&
     fld->cro_type != fld->TYPE_TEXT &&
@@ -595,7 +598,8 @@ int CDatabase::fetch_field_info(const string *str, size_t &cursor, CField * fld,
     fld->cro_type != fld->TYPE_TEMP_FILE &&
     fld->cro_type != fld->TYPE_LINK_DIRECT &&
     fld->cro_type != fld->TYPE_LINK_INVERSE &&
-    fld->cro_type != fld->TYPE_LINK_MULTY) )
+    fld->cro_type != fld->TYPE_LINK_MULTY &&
+    fld->cro_type != fld->TYPE_SECURITY_LEVEL) )
   {
     error_msg = "Ќеверный тип или отсутствуют данные в описании \"“ип\" пол€ \"" + fld->cro_name + "\" базы \"" + base->cro_name + "\".";
     return EXIT_FAILURE;
@@ -736,7 +740,10 @@ int CDatabase::links_resolve(vector<CField *> * links)
       warn = true;
     }
     if( (*i)->cro_type == (*i)->TYPE_LINK_INVERSE )
+	{
+	  i++;
       continue; // Ќе интересует, если на них не указывает какой-либо LINK_TYPE_DIRECT
+	}
     if( (*i)->cro_type == (*i)->TYPE_LINK_DIRECT )
       if( to_field->cro_type != (*i)->TYPE_LINK_INVERSE )
       {
@@ -768,13 +775,24 @@ int CDatabase::links_resolve(vector<CField *> * links)
           return EXIT_WARNING;
         }
         references.push_back(tmp_ref);
-        if(i != j)
-        {
-          delete (*j);
-          links->erase(j);
+		
+		// Ќемного неловко сделано, потому что приходитс€ обратные ссылки
+		// несколько раз обходить, но зато нет утечек по пам€ти...
+		if( i != j)
+		{
+          CField* rmi = *i;
+          CField* rmj = *j;
+          links->erase(remove(links->begin(), links->end(), rmj), links->end());
+          links->erase(remove(links->begin(), links->end(), rmi), links->end());
+          delete(rmi);
+          delete(rmj);
+		  i = links->begin();
         }
-        delete (*i);
-        i=links->erase(i);
+		else
+		{
+			delete(*i);
+			i=links->erase(i);
+		}
   }
   if(warn)
     return EXIT_WARNING;
