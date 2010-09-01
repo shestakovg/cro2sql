@@ -18,7 +18,7 @@ endif
 SRC_DIR     =  ./src
 OBJ_DIR     := $(OBJECTS_DIR)
 SRC         :=  dataparser.cpp \
-  		dbstruct.cpp \
+		dbstruct.cpp \
 		freader.cpp \
 		getopt.cpp \
 		misc.cpp
@@ -37,11 +37,9 @@ INCPATH         = -I"." \
 LINK            = g++
 LFLAGS          = 
 LIBS            = 
-DEL_FILE        = del /Q
-DEL_DIR         = rmdir /Q /S
-CHK_DIR_NEXISTS = if not exist
-CHK_DIR_EXISTS  = if exist
-MKDIR           = mkdir
+DEL_FILE        = rm -f
+DEL_DIR         = rm -rf
+MKDIR           = mkdir -p
 CXXOUTPUT       = -o
 
 ### SOURCES TRANSLATION
@@ -51,9 +49,9 @@ SRC  = $(addprefix $(SRC_DIR)/,$(SRC))
 
 ### Build directory creation/deletion
 mk_dir:
-	-@$(CHK_DIR_NEXISTS) $(OBJECTS_DIR) $(MKDIR) $(OBJECTS_DIR)
+	-@$(MKDIR) $(OBJECTS_DIR)
 clean:
-	-@$(CHK_DIR_EXISTS) $(OBJECTS_DIR) $(DEL_DIR) $(OBJECTS_DIR)
+	-@$(DEL_DIR) $(OBJECTS_DIR)
 
 #### Implicit rules
 $(OBJ_DIR)/%.obj: $(SRC_DIR)/%.cpp
@@ -75,3 +73,4 @@ test.exe: $(OBJ) $(OBJECTS_DIR)/test.obj
 	$(LINK) $(LFLAGS) -o $(OBJECTS_DIR)/test.exe $(OBJ) $(OBJECTS_DIR)/test.obj $(LIBS)
 
 .PHONY: all first test without_test
+
